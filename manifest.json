@@ -1,0 +1,16 @@
+{
+	"name":"Wb-TextReplacer",
+	"description" :  "Web Extension to replace text",
+	"version" : "0.1.0",
+	"manifest_version" : 3,
+	"action":{
+		"default_popup" : "popup/popup.html"
+	},
+	"background" : {
+		"service_worker" : "bg/background.js"
+	},
+	"content_scripts" : [{
+		"matches" : ["<all_urls>"],
+		"js" : ["content_scripts/content.js"]
+	}]
+}
