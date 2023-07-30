@@ -1,24 +1,27 @@
 const target = document.querySelector("html");
-
+const targetText = "answer"
+const replaceText = "ATYALAMACHA"
 const recur = (elem) => {
     Array.from(elem.childNodes).forEach((e, idx) => {
-        //console.log(e,e.nodeType, e.TEXT_NODE,e.textContent	 );
 
         if (e.nodeType === e.TEXT_NODE) {
-            // console.log( e, e.textContent );
-            //e.nodeValue = "oy"
+			if ( e.nodeValue.match( targetText ) ) {
+				console.log("MATCHED")
+				//let modifiedText = e.nodeValue.replace(new RegExp(`\\b${targetText}\\b`,"gi"), "GREAT");
+				let splittedString = e.nodeValue.split( targetText )
+				const spanElem = document.createElement( 'span' )
+				console.log(splittedString)
+				for ( let split of splittedString ) {
+					spanElem.appendChild( document.createTextNode( split ) );
 
-            // if ( elem.classList.contains( "question-hyperlink" ) ) {
-            // 	console.log("heading")
-            // 	elem.style.background = "blue";
-            // 	elem.style.color = "white"
-            // }
-			console.log(e.nodeValue)
-            let modifiedText = e.nodeValue.replace(new RegExp(/answer/,"gi"), "GREAT");
-			if ( e.nodeValue.includes("answer") ) {
-				console.log("found answer")
-				elem.style.background = "yellow";
-				elem.replaceChild(document.createTextNode(modifiedText),e)
+					let spanChild = document.createElement( 'span' )
+					spanChild.appendChild( document.createTextNode( replaceText ) )
+					spanChild.style.setProperty("background","yellow")
+					spanElem.appendChild(spanChild)
+				}
+				//elem.style.background = "yellow";
+				console.log(spanElem)
+				elem.replaceChild(spanElem,e)
 			}
         }
         //console.log(e,elem.childNodes.length)
