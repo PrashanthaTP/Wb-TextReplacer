@@ -1,0 +1,30 @@
+body {
+    height: 15rem;
+    width: 15rem;
+    padding: 1rem;
+    background: #030303;
+    color: white;
+}
+label,
+input[type="text"] {
+    display: block;
+}
+.warning {
+    color: red;
+}
+.warning span {
+    display: block;
+}
+.inline {
+    display: inline-block;
+}
+
+input[type="submit"] {
+    cursor: pointer;
+}
+#submit-btn:active {
+    background: #ea7575;
+}
+#submit-btn:hover {
+    background: #c1bebe;
+}
