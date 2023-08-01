@@ -1,8 +1,7 @@
 const target = document.querySelector("html");
-const targetText = "answer";
-const replaceText = "ATYALAMACHA";
 
-const recur = (elem) => {
+
+const recur = (elem,targetText,replacementText) => {
     Array.from(elem.childNodes).forEach((e, idx) => {
         if (e.nodeType === e.TEXT_NODE) {
             if (e.nodeValue.match(targetText)) {
@@ -20,7 +19,7 @@ const recur = (elem) => {
                         continue;
                     }
                     let spanChild = document.createElement("span");
-                    spanChild.appendChild(document.createTextNode(replaceText));
+                    spanChild.appendChild(document.createTextNode(replacementText));
                     spanChild.style.setProperty("background", "yellow");
                     spanElem.appendChild(spanChild);
                 }
@@ -31,8 +30,19 @@ const recur = (elem) => {
         }
         //console.log(e,elem.childNodes.length)
         if (e.nodeType === e.ELEMENT_NODE) {
-            recur(e);
+            recur(e,targetText,replacementText);
         }
     });
 };
-recur(target);
+//recur(target);
+const messageListener = ( request, sender, sendResponse ) => {
+    // const targetText = "answer";
+    // const replacementText = "ATYALAMACHA";
+    switch (request.action){
+        case ( "PERFORM_REPLACE_TEXT" ):
+            recur( target,request.targetText,request.replacementText);
+            sendResponse({error:""})
+            break;
+    }
+}
+chrome.runtime.onMessage.addListener(messageListener)
