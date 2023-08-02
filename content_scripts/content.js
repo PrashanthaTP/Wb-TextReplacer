@@ -1,7 +1,6 @@
 const target = document.querySelector("html");
 
-
-const recur = (elem,targetText,replacementText) => {
+const recur = (elem, targetText, replacementText) => {
     Array.from(elem.childNodes).forEach((e, idx) => {
         if (e.nodeType === e.TEXT_NODE) {
             if (e.nodeValue.match(targetText)) {
@@ -19,7 +18,9 @@ const recur = (elem,targetText,replacementText) => {
                         continue;
                     }
                     let spanChild = document.createElement("span");
-                    spanChild.appendChild(document.createTextNode(replacementText));
+                    spanChild.appendChild(
+                        document.createTextNode(replacementText)
+                    );
                     spanChild.style.setProperty("background", "yellow");
                     spanElem.appendChild(spanChild);
                 }
@@ -30,19 +31,25 @@ const recur = (elem,targetText,replacementText) => {
         }
         //console.log(e,elem.childNodes.length)
         if (e.nodeType === e.ELEMENT_NODE) {
-            recur(e,targetText,replacementText);
+            recur(e, targetText, replacementText);
         }
     });
 };
 //recur(target);
-const messageListener = ( request, sender, sendResponse ) => {
+const messageListener = (request, sender, sendResponse) => {
     // const targetText = "answer";
     // const replacementText = "ATYALAMACHA";
-    switch (request.action){
-        case ( "PERFORM_REPLACE_TEXT" ):
-            recur( target,request.targetText,request.replacementText);
-            sendResponse({error:""})
+    switch (request.action) {
+        case "PERFORM_REPLACE_TEXT":
+            recur(target, request.targetText, request.replacementText);
+            sendResponse({ error: "" });
+            break;
+        case "EXTENSION_GOT_ACTIVE":
+            console.log("EXTENSION_GOT_ACTIVE");
+            break;
+        case "EXTENSION_GOT_INACTIVE":
+            console.log("EXTENSION_GOT_INACTIVE");
             break;
     }
-}
-chrome.runtime.onMessage.addListener(messageListener)
+};
+chrome.runtime.onMessage.addListener(messageListener);

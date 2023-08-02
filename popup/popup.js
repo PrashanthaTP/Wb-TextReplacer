@@ -5,18 +5,20 @@ const form = document.querySelector("#form");
 const checkbox = document.querySelector("#extensionActive-checkbox");
 const msgElem = document.querySelector("#info-p");
 
-const performReplaceText = async (targetText, replacementText) => {
-    const [tab] = await chrome.tabs.query({
+const getCurrentTab = async () => {
+    return await chrome.tabs.query({
         active: true,
         lastFocusedWindow: true,
     });
+};
+const performReplaceText = async (targetText, replacementText) => {
+    const [tab] = await getCurrentTab();
     const response = await chrome.tabs.sendMessage(tab.id, {
         action: "PERFORM_REPLACE_TEXT",
         targetText,
         replacementText,
-    } );
-    msgElem.textContent = "Successful!" 
-    
+    });
+    msgElem.textContent = "Successful!";
 };
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ form.addEventListener("submit", (e) => {
     msgElem.textContent = "";
     const targetText = targetTextInputElem.value;
     const replacementText = replacementTextInputElem.value;
-    console.log(replacementText)
+    console.log(replacementText);
     let warning = "";
     if (targetText.trim().length === 0) {
         warning = "target text cannot be empty!";
@@ -44,5 +46,37 @@ form.addEventListener("submit", (e) => {
         msgElem.appendChild(newWarningSpan);
     }
 
-    performReplaceText(targetText,replacementText);
+    performReplaceText(targetText, replacementText);
 });
+
+const checkIfActive = async () => {
+    const { isExtensionActive } = await chrome.storage.local.get([
+        "isExtensionActive",
+    ]);
+    console.log("isExtensionActive : ", isExtensionActive);
+    if (isExtensionActive !== undefined) {
+        checkbox.checked = isExtensionActive;
+    }
+};
+
+const notifyContentScript = async (payload) => {
+    const [tab] = await getCurrentTab();
+    const response = await chrome.tabs.sendMessage( tab.id, payload );
+    console.log(response)
+};
+const init = async () => {
+    checkIfActive();
+    checkbox.addEventListener("change", (e) => {
+        chrome.storage.local.set({ isExtensionActive: checkbox.checked });
+        if (checkbox.checked) {
+            notifyContentScript({
+                action: "EXTENSION_GOT_ACTIVE",
+            });
+        } else {
+            notifyContentScript({
+                action: "EXTENSION_GOT_INACTIVE",
+            });
+        }
+    });
+};
+init();
